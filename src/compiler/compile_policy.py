@@ -4,8 +4,8 @@ title: "CRI-CORE Governance Policy Compiler"
 filetype: "operational"
 type: "specification"
 domain: "governance"
-version: "0.1.0"
-doi: "TBD-0.1.0"
+version: "0.1.1"
+doi: "TBD-0.1.1"
 status: "Active"
 created: "2026-03-11"
 updated: "2026-03-11"
@@ -29,15 +29,18 @@ ai_assisted: "partial"
 
 dependencies:
   - "../../schema/policy.schema.json"
+  - "./contract_hash.py"
 
 anchors:
-  - "CRI-CORE-POLICY-COMPILER-v0.1.0"
+  - "CRI-CORE-POLICY-COMPILER-v0.1.1"
 ---
 """
 
 from __future__ import annotations
 
 from typing import Any, Dict
+
+from compiler.contract_hash import compute_contract_hash
 
 
 class PolicyCompilationError(Exception):
@@ -55,8 +58,11 @@ def compile_policy(policy: Dict[str, Any]) -> Dict[str, Any]:
     This compiler performs structural transformation only.
     It does not interpret governance semantics.
 
-    Expected input: validated governance policy
-    Output: compiled contract artifact compatible with CRI-CORE.
+    Expected input:
+        validated governance policy
+
+    Output:
+        compiled contract artifact compatible with CRI-CORE
     """
 
     if not isinstance(policy, dict):
@@ -106,5 +112,11 @@ def compile_policy(policy: Dict[str, Any]) -> Dict[str, Any]:
     # Structural invariants
     if authority.get("separation_of_duties"):
         compiled["invariants"]["separation_of_duties"] = True
+
+    # Deterministic cryptographic binding
+    # Hash must be computed before adding the hash field itself
+    contract_hash = compute_contract_hash(compiled)
+
+    compiled["contract_hash"] = contract_hash
 
     return compiled
