@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cricore-contract-compiler"
+version = "0.1.0"
+description = "Deterministic governance policy compiler for CRI-CORE compiled contracts."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+
+authors = [
+    { name = "Shawn C. Wright", email = "swright@waveframelabs.org" }
+]
+
+keywords = [
+    "governance",
+    "compiler",
+    "policy",
+    "deterministic",
+    "reproducibility",
+    "cricore"
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12"
+]
+
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7",
+    "jsonschema>=4"
+]
+
+[project.urls]
+Homepage = "https://waveframelabs.org"
+Source = "https://github.com/Waveframe-Labs/cricore-contract-compiler"
+Issues = "https://github.com/Waveframe-Labs/cricore-contract-compiler/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
