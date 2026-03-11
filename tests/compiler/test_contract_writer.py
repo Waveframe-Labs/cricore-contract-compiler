@@ -4,8 +4,8 @@ title: "CRI-CORE Compiled Contract Writer Tests"
 filetype: "documentation"
 type: "specification"
 domain: "governance"
-version: "0.1.0"
-doi: "TBD-0.1.0"
+version: "0.1.1"
+doi: "TBD-0.1.1"
 status: "Active"
 created: "2026-03-11"
 updated: "2026-03-11"
@@ -32,7 +32,7 @@ dependencies:
   - "../../src/compiler/compile_policy.py"
 
 anchors:
-  - "CRI-CORE-CONTRACT-WRITER-TESTS-v0.1.0"
+  - "CRI-CORE-CONTRACT-WRITER-TESTS-v0.1.1"
 ---
 """
 
@@ -71,11 +71,11 @@ def test_written_contract_matches_compiled_output(tmp_path: Path):
 
     output_file = tmp_path / "compiled_contract.json"
 
-    write_compiled_contract(policy, output_file)
+    compiled = compile_policy(policy)
+
+    write_compiled_contract(compiled, output_file)
 
     with output_file.open() as f:
         written_contract = json.load(f)
 
-    expected_contract = compile_policy(policy)
-
-    assert written_contract == expected_contract
+    assert written_contract == compiled
