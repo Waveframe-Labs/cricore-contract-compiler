@@ -4,8 +4,8 @@ title: "CRI-CORE Compiled Contract Artifact Writer"
 filetype: "operational"
 type: "specification"
 domain: "governance"
-version: "0.1.0"
-doi: "TBD-0.1.0"
+version: "0.1.1"
+doi: "TBD-0.1.1"
 status: "Active"
 created: "2026-03-11"
 updated: "2026-03-11"
@@ -27,11 +27,8 @@ copyright:
 
 ai_assisted: "partial"
 
-dependencies:
-  - "./compile_policy.py"
-
 anchors:
-  - "CRI-CORE-COMPILED-CONTRACT-WRITER-v0.1.0"
+  - "CRI-CORE-COMPILED-CONTRACT-WRITER-v0.1.1"
 ---
 """
 
@@ -41,8 +38,6 @@ import json
 from pathlib import Path
 from typing import Any, Dict
 
-from compiler.compile_policy import compile_policy
-
 
 class ContractWriteError(Exception):
     """
@@ -51,14 +46,16 @@ class ContractWriteError(Exception):
     pass
 
 
-def write_compiled_contract(policy: Dict[str, Any], output_path: Path) -> Path:
+def write_compiled_contract(contract: Dict[str, Any], output_path: Path) -> Path:
     """
-    Compile a governance policy and write the compiled contract artifact.
+    Write a compiled contract artifact to disk.
 
-    Returns the path to the written contract file.
+    This function performs no compilation or transformation.
+    It only serializes an already-compiled contract artifact.
     """
 
-    compiled_contract = compile_policy(policy)
+    if not isinstance(contract, dict):
+        raise ContractWriteError("contract must be a dictionary")
 
     if not isinstance(output_path, Path):
         raise ContractWriteError("output_path must be a pathlib.Path")
@@ -73,7 +70,7 @@ def write_compiled_contract(policy: Dict[str, Any], output_path: Path) -> Path:
     try:
         with output_path.open("w", encoding="utf-8") as f:
             json.dump(
-                compiled_contract,
+                contract,
                 f,
                 indent=2,
                 sort_keys=True
