@@ -4,8 +4,8 @@ title: "CRI-CORE Policy Compiler Behavior Tests"
 filetype: "documentation"
 type: "specification"
 domain: "governance"
-version: "0.1.0"
-doi: "TBD-0.1.0"
+version: "0.1.1"
+doi: "TBD-0.1.1"
 status: "Active"
 created: "2026-03-11"
 updated: "2026-03-11"
@@ -31,11 +31,11 @@ dependencies:
   - "../../src/compiler/compile_policy.py"
 
 anchors:
-  - "CRI-CORE-POLICY-COMPILER-TESTS-v0.1.0"
+  - "CRI-CORE-POLICY-COMPILER-TESTS-v0.1.1"
 ---
 """
 
-from compiler.compile_policy import compile_policy
+from src.compiler.compile_policy import compile_policy
 
 
 def test_minimal_policy_compiles():
