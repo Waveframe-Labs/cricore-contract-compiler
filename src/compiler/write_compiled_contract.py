@@ -4,8 +4,8 @@ title: "CRI-CORE Compiled Contract Artifact Writer"
 filetype: "operational"
 type: "specification"
 domain: "governance"
-version: "0.1.2"
-doi: "TBD-0.1.2"
+version: "0.1.3"
+doi: "TBD-0.1.3"
 status: "Active"
 created: "2026-03-11"
 updated: "2026-03-11"
@@ -27,11 +27,8 @@ copyright:
 
 ai_assisted: "partial"
 
-dependencies:
-  - "./compile_policy.py"
-
 anchors:
-  - "CRI-CORE-COMPILED-CONTRACT-WRITER-v0.1.2"
+  - "CRI-CORE-COMPILED-CONTRACT-WRITER-v0.1.3"
 ---
 """
 
@@ -41,8 +38,6 @@ import json
 from pathlib import Path
 from typing import Any, Dict
 
-from compiler.compile_policy import compile_policy
-
 
 class ContractWriteError(Exception):
     """
@@ -51,14 +46,18 @@ class ContractWriteError(Exception):
     pass
 
 
-def write_compiled_contract(policy: Dict[str, Any], output_path: Path) -> Path:
+def write_compiled_contract(compiled_contract: Dict[str, Any], output_path: Path) -> Path:
     """
-    Compile a governance policy and write the compiled contract artifact.
+    Write a compiled contract artifact to disk.
 
     Returns the path to the written contract file.
     """
 
-    compiled_contract = compile_policy(policy)
+    if not isinstance(compiled_contract, dict):
+        raise ContractWriteError("compiled_contract must be a dictionary")
+
+    if "contract_hash" not in compiled_contract:
+        raise ContractWriteError("compiled_contract missing contract_hash")
 
     if not isinstance(output_path, Path):
         raise ContractWriteError("output_path must be a pathlib.Path")
@@ -70,7 +69,6 @@ def write_compiled_contract(policy: Dict[str, Any], output_path: Path) -> Path:
             f"failed to create output directory: {exc}"
         ) from exc
 
-    # Add non-normative compiler metadata for audit visibility
     artifact = {
         "_compiler": {
             "tool": "cricore-contract-compiler",

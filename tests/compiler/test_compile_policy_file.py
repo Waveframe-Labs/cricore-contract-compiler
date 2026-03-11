@@ -1,11 +1,11 @@
 """
 ---
-title: "CRI-CORE Policy File Compiler Integration Tests"
+title: "CRI-CORE Policy File Compiler Pipeline Tests"
 filetype: "documentation"
 type: "specification"
 domain: "governance"
-version: "0.1.0"
-doi: "TBD-0.1.0"
+version: "0.1.1"
+doi: "TBD-0.1.1"
 status: "Active"
 created: "2026-03-11"
 updated: "2026-03-11"
@@ -29,17 +29,18 @@ ai_assisted: "partial"
 
 dependencies:
   - "../../src/compiler/compile_policy_file.py"
+  - "../../src/compiler/compile_policy.py"
 
 anchors:
-  - "CRI-CORE-POLICY-FILE-COMPILER-TESTS-v0.1.0"
+  - "CRI-CORE-POLICY-FILE-COMPILER-TESTS-v0.1.1"
 ---
 """
 
 import json
 from pathlib import Path
 
-from compiler.compile_policy_file import compile_policy_file
 from compiler.compile_policy import compile_policy
+from compiler.compile_policy_file import compile_policy_file
 
 
 def test_compile_policy_file_pipeline(tmp_path: Path):
@@ -65,9 +66,19 @@ def test_compile_policy_file_pipeline(tmp_path: Path):
     assert written_path == output_file
 
     with output_file.open() as f:
-        compiled = json.load(f)
+        artifact = json.load(f)
 
     expected = compile_policy(policy)
 
-    assert compiled == expected
-    
+    # verify compiler metadata
+    assert "_compiler" in artifact
+    assert artifact["_compiler"]["tool"] == "cricore-contract-compiler"
+    assert artifact["_compiler"]["contract_hash"] == expected["contract_hash"]
+
+    # compare compiled contract surface
+    contract_surface = {
+        k: v for k, v in artifact.items()
+        if k != "_compiler"
+    }
+
+    assert contract_surface == expected
