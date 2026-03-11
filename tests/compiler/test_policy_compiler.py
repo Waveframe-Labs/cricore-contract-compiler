@@ -4,8 +4,8 @@ title: "CRI-CORE Policy Compiler Behavior Tests"
 filetype: "documentation"
 type: "specification"
 domain: "governance"
-version: "0.1.0"
-doi: "TBD-0.1.0"
+version: "0.1.1"
+doi: "TBD-0.1.1"
 status: "Active"
 created: "2026-03-11"
 updated: "2026-03-11"
@@ -31,7 +31,7 @@ dependencies:
   - "../../src/compiler/compile_policy.py"
 
 anchors:
-  - "CRI-CORE-POLICY-COMPILER-TESTS-v0.1.0"
+  - "CRI-CORE-POLICY-COMPILER-TESTS-v0.1.1"
 ---
 """
 
@@ -55,6 +55,11 @@ def test_minimal_policy_compiles():
     assert compiled["stage_requirements"] == {}
     assert compiled["invariants"] == {}
 
+    # cryptographic contract identity
+    assert "contract_hash" in compiled
+    assert isinstance(compiled["contract_hash"], str)
+    assert len(compiled["contract_hash"]) == 64
+
 
 def test_authority_rules_compile():
 
@@ -77,6 +82,8 @@ def test_authority_rules_compile():
     assert compiled["authority_requirements"]["separation_of_duties"] is True
     assert compiled["invariants"]["separation_of_duties"] is True
 
+    assert "contract_hash" in compiled
+
 
 def test_artifact_requirements_compile():
 
@@ -94,6 +101,8 @@ def test_artifact_requirements_compile():
         "proposal",
         "approval",
     ]
+
+    assert "contract_hash" in compiled
 
 
 def test_stage_transitions_compile():
@@ -115,3 +124,5 @@ def test_stage_transitions_compile():
     assert len(transitions) == 1
     assert transitions[0]["from"] == "proposed"
     assert transitions[0]["to"] == "approved"
+
+    assert "contract_hash" in compiled
