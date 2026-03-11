@@ -52,7 +52,9 @@ def test_compiled_contract_is_written(tmp_path: Path):
 
     output_file = tmp_path / "compiled_contract.json"
 
-    written_path = write_compiled_contract(policy, output_file)
+    compiled = compile_policy(policy)
+
+    written_path = write_compiled_contract(compiled, output_file)
 
     assert written_path.exists()
     assert written_path == output_file
@@ -73,7 +75,7 @@ def test_written_contract_matches_compiled_output(tmp_path: Path):
 
     compiled = compile_policy(policy)
 
-    write_compiled_contract(policy, output_file)
+    write_compiled_contract(compiled, output_file)
 
     with output_file.open() as f:
         written_contract = json.load(f)
