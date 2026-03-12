@@ -4,8 +4,8 @@ title: "CRI-CORE Governance Policy Compiler"
 filetype: "operational"
 type: "specification"
 domain: "governance"
-version: "0.1.1"
-doi: "TBD-0.1.1"
+version: "0.1.2"
+doi: "TBD-0.1.2"
 status: "Active"
 created: "2026-03-11"
 updated: "2026-03-11"
@@ -32,7 +32,7 @@ dependencies:
   - "./contract_hash.py"
 
 anchors:
-  - "CRI-CORE-POLICY-COMPILER-v0.1.1"
+  - "CRI-CORE-POLICY-COMPILER-v0.1.2"
 ---
 """
 
@@ -40,7 +40,7 @@ from __future__ import annotations
 
 from typing import Any, Dict
 
-from compiler.contract_hash import compute_contract_hash
+from .contract_hash import compute_contract_hash
 
 
 class PolicyCompilationError(Exception):
