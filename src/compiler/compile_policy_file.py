@@ -4,8 +4,8 @@ title: "CRI-CORE Policy File Compiler Entrypoint"
 filetype: "operational"
 type: "specification"
 domain: "governance"
-version: "0.1.0"
-doi: "TBD-0.1.0"
+version: "0.1.1"
+doi: "TBD-0.1.1"
 status: "Active"
 created: "2026-03-11"
 updated: "2026-03-11"
@@ -33,7 +33,7 @@ dependencies:
   - "./write_compiled_contract.py"
 
 anchors:
-  - "CRI-CORE-POLICY-FILE-COMPILER-v0.1.0"
+  - "CRI-CORE-POLICY-FILE-COMPILER-v0.1.1"
 ---
 """
 
@@ -41,9 +41,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from compiler.load_policy import load_policy
-from compiler.compile_policy import compile_policy
-from compiler.write_compiled_contract import write_compiled_contract
+from .load_policy import load_policy
+from .compile_policy import compile_policy
+from .write_compiled_contract import write_compiled_contract
 
 
 def compile_policy_file(policy_path: Path, output_path: Path) -> Path:
