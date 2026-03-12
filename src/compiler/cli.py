@@ -66,3 +66,7 @@ def main() -> None:
     output_path = compile_policy_file(args.policy, args.output)
 
     print(f"Compiled contract written to: {output_path}")
+
+if __name__ == "__main__":
+    main()
+    
