@@ -40,7 +40,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from compiler.compile_policy_file import compile_policy_file
+from .compile_policy_file import compile_policy_file
 
 
 def main() -> None:
