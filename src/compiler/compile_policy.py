@@ -4,11 +4,11 @@ title: "CRI-CORE Governance Policy Compiler"
 filetype: "operational"
 type: "specification"
 domain: "governance"
-version: "0.1.2"
-doi: "TBD-0.1.2"
+version: "0.2.0"
+doi: "TBD-0.2.0"
 status: "Active"
 created: "2026-03-11"
-updated: "2026-03-11"
+updated: "2026-03-20"
 
 author:
   name: "Shawn C. Wright"
@@ -32,38 +32,22 @@ dependencies:
   - "./contract_hash.py"
 
 anchors:
-  - "CRI-CORE-POLICY-COMPILER-v0.1.2"
+  - "CRI-CORE-POLICY-COMPILER-v0.2.0"
 ---
 """
 
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from .contract_hash import compute_contract_hash
 
 
 class PolicyCompilationError(Exception):
-    """
-    Raised when a governance policy cannot be compiled into a
-    deterministic contract artifact.
-    """
     pass
 
 
 def compile_policy(policy: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Compile a governance policy into a CRI-CORE compiled contract artifact.
-
-    This compiler performs structural transformation only.
-    It does not interpret governance semantics.
-
-    Expected input:
-        validated governance policy
-
-    Output:
-        compiled contract artifact compatible with CRI-CORE
-    """
 
     if not isinstance(policy, dict):
         raise PolicyCompilationError("policy must be an object")
@@ -77,10 +61,6 @@ def compile_policy(policy: Dict[str, Any]) -> Dict[str, Any]:
     if not contract_version:
         raise PolicyCompilationError("policy missing contract_version")
 
-    authority = policy.get("authority", {})
-    artifacts = policy.get("artifacts", {})
-    stages = policy.get("stages", {})
-
     compiled: Dict[str, Any] = {
         "contract_id": contract_id,
         "contract_version": contract_version,
@@ -90,33 +70,27 @@ def compile_policy(policy: Dict[str, Any]) -> Dict[str, Any]:
         "invariants": {}
     }
 
-    # Authority requirements
-    if authority:
-        compiled["authority_requirements"] = {
-            "required_roles": authority.get("required_roles", []),
-            "separation_of_duties": authority.get("separation_of_duties", False)
-        }
+    # 🔥 NEW: constraint → invariant mapping
+    constraints: List[Dict[str, Any]] = policy.get("constraints", [])
 
-    # Artifact requirements
-    if artifacts:
-        compiled["artifact_requirements"] = {
-            "required_artifacts": artifacts.get("required", [])
-        }
+    separation_rules = []
 
-    # Stage requirements
-    if stages:
-        compiled["stage_requirements"] = {
-            "allowed_transitions": stages.get("allowed_transitions", [])
-        }
+    for c in constraints:
+        if c.get("type") == "separation_of_duties":
+            roles = c.get("roles", [])
 
-    # Structural invariants
-    if authority.get("separation_of_duties"):
-        compiled["invariants"]["separation_of_duties"] = True
+            if not isinstance(roles, list) or len(roles) < 2:
+                raise PolicyCompilationError(
+                    "separation_of_duties constraint must define at least two roles"
+                )
 
-    # Deterministic cryptographic binding
-    # Hash must be computed before adding the hash field itself
+            separation_rules.append(roles)
+
+    if separation_rules:
+        compiled["invariants"]["separation_of_duties"] = separation_rules
+
+    # Deterministic hash
     contract_hash = compute_contract_hash(compiled)
-
     compiled["contract_hash"] = contract_hash
 
     return compiled
