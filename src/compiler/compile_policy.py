@@ -67,17 +67,45 @@ def compile_policy(policy: Dict[str, Any]) -> Dict[str, Any]:
         "authority_requirements": {},
         "artifact_requirements": {},
         "stage_requirements": {},
-        "invariants": {}
+        "invariants": {},
     }
 
-    # 🔥 NEW: constraint → invariant mapping
+    authority = policy.get("authority", {})
+    if authority:
+        required_roles = authority.get("required_roles")
+        if required_roles is not None:
+            compiled["authority_requirements"]["required_roles"] = required_roles
+
+        separation_of_duties = authority.get("separation_of_duties")
+        if separation_of_duties is not None:
+            compiled["authority_requirements"]["separation_of_duties"] = (
+                separation_of_duties
+            )
+            compiled["invariants"]["separation_of_duties"] = separation_of_duties
+
+    artifacts = policy.get("artifacts", {})
+    if artifacts:
+        required_artifacts = artifacts.get("required")
+        if required_artifacts is not None:
+            compiled["artifact_requirements"]["required_artifacts"] = (
+                required_artifacts
+            )
+
+    stages = policy.get("stages", {})
+    if stages:
+        allowed_transitions = stages.get("allowed_transitions")
+        if allowed_transitions is not None:
+            compiled["stage_requirements"]["allowed_transitions"] = (
+                allowed_transitions
+            )
+
     constraints: List[Dict[str, Any]] = policy.get("constraints", [])
 
     separation_rules = []
 
-    for c in constraints:
-        if c.get("type") == "separation_of_duties":
-            roles = c.get("roles", [])
+    for constraint in constraints:
+        if constraint.get("type") == "separation_of_duties":
+            roles = constraint.get("roles", [])
 
             if not isinstance(roles, list) or len(roles) < 2:
                 raise PolicyCompilationError(
@@ -89,7 +117,6 @@ def compile_policy(policy: Dict[str, Any]) -> Dict[str, Any]:
     if separation_rules:
         compiled["invariants"]["separation_of_duties"] = separation_rules
 
-    # Deterministic hash
     contract_hash = compute_contract_hash(compiled)
     compiled["contract_hash"] = contract_hash
 
