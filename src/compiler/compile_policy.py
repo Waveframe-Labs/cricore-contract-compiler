@@ -38,6 +38,8 @@ anchors:
 
 from __future__ import annotations
 
+import json
+import re
 from typing import Any, Dict, List
 
 from .contract_hash import compute_contract_hash
@@ -61,6 +63,13 @@ def compile_policy(policy: Dict[str, Any]) -> Dict[str, Any]:
     if not contract_version:
         raise PolicyCompilationError("policy missing contract_version")
 
+    if not isinstance(contract_version, str) or not re.match(
+        r"^\d+\.\d+\.\d+$", contract_version
+    ):
+        raise PolicyCompilationError(
+            "contract_version must follow semantic versioning (X.Y.Z)"
+        )
+
     compiled: Dict[str, Any] = {
         "contract_id": contract_id,
         "contract_version": contract_version,
@@ -74,19 +83,26 @@ def compile_policy(policy: Dict[str, Any]) -> Dict[str, Any]:
     if authority:
         required_roles = authority.get("required_roles")
         if required_roles is not None:
-            compiled["authority_requirements"]["required_roles"] = required_roles
+            if not isinstance(required_roles, list) or not all(
+                isinstance(role, str) for role in required_roles
+            ):
+                raise PolicyCompilationError(
+                    "required_roles must be a list of strings"
+                )
 
-        separation_of_duties = authority.get("separation_of_duties")
-        if separation_of_duties is not None:
-            compiled["authority_requirements"]["separation_of_duties"] = (
-                separation_of_duties
-            )
-            compiled["invariants"]["separation_of_duties"] = separation_of_duties
+            compiled["authority_requirements"]["required_roles"] = required_roles
 
     artifacts = policy.get("artifacts", {})
     if artifacts:
         required_artifacts = artifacts.get("required")
         if required_artifacts is not None:
+            if not isinstance(required_artifacts, list) or not all(
+                isinstance(artifact, str) for artifact in required_artifacts
+            ):
+                raise PolicyCompilationError(
+                    "required artifacts must be a list of strings"
+                )
+
             compiled["artifact_requirements"]["required_artifacts"] = (
                 required_artifacts
             )
@@ -95,6 +111,13 @@ def compile_policy(policy: Dict[str, Any]) -> Dict[str, Any]:
     if stages:
         allowed_transitions = stages.get("allowed_transitions")
         if allowed_transitions is not None:
+            if not isinstance(allowed_transitions, list) or not all(
+                isinstance(transition, dict) for transition in allowed_transitions
+            ):
+                raise PolicyCompilationError(
+                    "allowed_transitions must be a list of transition objects"
+                )
+
             compiled["stage_requirements"]["allowed_transitions"] = (
                 allowed_transitions
             )
@@ -117,7 +140,17 @@ def compile_policy(policy: Dict[str, Any]) -> Dict[str, Any]:
     if separation_rules:
         compiled["invariants"]["separation_of_duties"] = separation_rules
 
-    contract_hash = compute_contract_hash(compiled)
+    for key in [
+        "authority_requirements",
+        "artifact_requirements",
+        "stage_requirements",
+        "invariants",
+    ]:
+        if not compiled[key]:
+            compiled[key] = {}
+
+    canonical = json.loads(json.dumps(compiled, sort_keys=True))
+    contract_hash = compute_contract_hash(canonical)
     compiled["contract_hash"] = contract_hash
 
     return compiled

@@ -69,7 +69,13 @@ def test_authority_rules_compile():
         "authority": {
             "required_roles": ["proposer", "reviewer"],
             "separation_of_duties": True
-        }
+        },
+        "constraints": [
+            {
+                "type": "separation_of_duties",
+                "roles": ["proposer", "reviewer"],
+            }
+        ],
     }
 
     compiled = compile_policy(policy)
@@ -79,8 +85,10 @@ def test_authority_rules_compile():
         "reviewer",
     ]
 
-    assert compiled["authority_requirements"]["separation_of_duties"] is True
-    assert compiled["invariants"]["separation_of_duties"] is True
+    assert "separation_of_duties" not in compiled["authority_requirements"]
+    assert compiled["invariants"]["separation_of_duties"] == [
+        ["proposer", "reviewer"]
+    ]
 
     assert "contract_hash" in compiled
 
