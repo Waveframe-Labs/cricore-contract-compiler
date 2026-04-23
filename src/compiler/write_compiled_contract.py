@@ -72,7 +72,7 @@ def write_compiled_contract(compiled_contract: Dict[str, Any], output_path: Path
     artifact = {
         "_compiler": {
             "tool": "cricore-contract-compiler",
-            "version": "0.1.0",
+            "version": "0.2.0",
             "contract_hash": compiled_contract["contract_hash"],
         },
         **compiled_contract,
