@@ -35,7 +35,9 @@ anchors:
 ---
 """
 
-from compiler.compile_policy import compile_policy
+import pytest
+
+from compiler.compile_policy import PolicyCompilationError, compile_policy
 
 
 def test_minimal_policy_compiles():
@@ -91,6 +93,20 @@ def test_authority_rules_compile():
     ]
 
     assert "contract_hash" in compiled
+
+
+def test_invalid_required_roles_type():
+
+    policy = {
+        "contract_id": "test",
+        "contract_version": "1.0.0",
+        "authority": {
+            "required_roles": "not-a-list"
+        }
+    }
+
+    with pytest.raises(PolicyCompilationError):
+        compile_policy(policy)
 
 
 def test_artifact_requirements_compile():

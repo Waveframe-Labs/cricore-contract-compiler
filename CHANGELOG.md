@@ -7,7 +7,7 @@ version: "0.1.0"
 doi: "TBD-0.1.0"
 status: "Active"
 created: "2026-03-11"
-updated: "2026-03-11"
+updated: "2026-04-22"
 
 author:
   name: "Shawn C. Wright"
@@ -31,6 +31,19 @@ anchors:
 ---
 
 # Changelog
+
+## [0.2.0] - 2026-04-22
+
+### Changed
+- Populated compiled authority, artifact, and stage requirement sections from policy schema fields.
+- Preserved separation-of-duties invariants through explicit constraint compilation.
+- Removed legacy compilation of `authority.separation_of_duties` into authority requirements.
+- Canonicalized compiled contract structures before hashing for stable deterministic contract hashes.
+- Kept compiled contract section keys present even when sections are empty.
+
+### Added
+- Minimal compile-time type validation for required roles, required artifacts, allowed transitions, and contract versions.
+- Negative compiler coverage for invalid authority role definitions.
 
 ## [0.1.0] – 2026-03-11
 
