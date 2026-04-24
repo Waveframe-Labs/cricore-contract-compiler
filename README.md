@@ -3,11 +3,11 @@ title: "CRI-CORE Contract Compiler - Repository Overview"
 filetype: "documentation"
 type: "overview"
 domain: "governance-tooling"
-version: "0.2.0"
-doi: "TBD-0.2.0"
+version: "0.2.1"
+doi: "TBD-0.2.1"
 status: "Active"
 created: "2026-03-11"
-updated: "2026-04-22"
+updated: "2026-04-23"
 
 author:
   name: "Waveframe Labs"
@@ -65,9 +65,19 @@ from compiler.compile_policy import compile_policy
 
 policy = {
     "contract_id": "finance-policy",
-    "contract_version": "0.2.0",
+    "contract_version": "0.2.1",
     "authority": {
         "required_roles": ["proposer", "reviewer"]
+    },
+    "approvals": {
+        "thresholds": [
+            {
+                "field": "amount",
+                "operator": ">",
+                "value": 1000,
+                "requires_role": "approver"
+            }
+        ]
     },
     "artifacts": {
         "required": ["proposal", "approval"]
@@ -95,13 +105,14 @@ Policies are JSON objects with a required contract identity:
 ```json
 {
   "contract_id": "finance-policy",
-  "contract_version": "0.2.0"
+  "contract_version": "0.2.1"
 }
 ```
 
 The compiler currently recognizes these optional sections:
 
 - `authority.required_roles`: list of role names required by the contract.
+- `approvals.thresholds`: list of threshold-based approval requirements.
 - `artifacts.required`: list of required governance artifact names.
 - `stages.allowed_transitions`: list of allowed lifecycle transition objects.
 - `constraints`: list of explicit structural constraints.
@@ -115,8 +126,9 @@ The compiled contract always includes these top-level sections:
 ```json
 {
   "contract_id": "finance-policy",
-  "contract_version": "0.2.0",
+  "contract_version": "0.2.1",
   "authority_requirements": {},
+  "approval_requirements": {},
   "artifact_requirements": {},
   "stage_requirements": {},
   "invariants": {},
@@ -127,6 +139,7 @@ The compiled contract always includes these top-level sections:
 The compiler maps policy fields into compiled contract fields as follows:
 
 - `policy.authority.required_roles` becomes `authority_requirements.required_roles`.
+- `policy.approvals.thresholds` becomes `approval_requirements.thresholds`.
 - `policy.artifacts.required` becomes `artifact_requirements.required_artifacts`.
 - `policy.stages.allowed_transitions` becomes `stage_requirements.allowed_transitions`.
 - `constraints[type="separation_of_duties"]` becomes `invariants.separation_of_duties`.
@@ -160,6 +173,7 @@ The compiler performs minimal compile-time validation for:
 - Required `contract_id`.
 - Required semantic `contract_version`.
 - `authority.required_roles` as a list of strings.
+- `approvals.thresholds` as a list of threshold objects.
 - `artifacts.required` as a list of strings.
 - `stages.allowed_transitions` as a list of transition objects.
 - Separation-of-duties constraints with at least two roles.
@@ -199,9 +213,9 @@ All runtime enforcement is handled by CRI-CORE or other downstream systems.
 
 ## Project Status
 
-Version `0.2.0` establishes the core policy-to-contract mappings, minimal
-compile-time validation, stable compiled contract shape, and deterministic
-contract hashing.
+Version `0.2.1` extends the compiler with approval-threshold requirements
+alongside the core policy-to-contract mappings, minimal compile-time
+validation, stable compiled contract shape, and deterministic contract hashing.
 
 The project remains in early development.
 
