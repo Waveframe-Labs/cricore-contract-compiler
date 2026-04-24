@@ -53,6 +53,7 @@ def test_minimal_policy_compiles():
     assert compiled["contract_version"] == "0.1.0"
 
     assert compiled["authority_requirements"] == {}
+    assert compiled["approval_requirements"] == {}
     assert compiled["artifact_requirements"] == {}
     assert compiled["stage_requirements"] == {}
     assert compiled["invariants"] == {}
@@ -127,6 +128,66 @@ def test_artifact_requirements_compile():
     ]
 
     assert "contract_hash" in compiled
+
+
+def test_approval_thresholds_compile():
+
+    policy = {
+        "contract_id": "finance-core",
+        "contract_version": "1.2.0",
+        "authority": {
+            "required_roles": ["proposer", "responsible", "accountable"]
+        },
+        "approvals": {
+            "thresholds": [
+                {
+                    "field": "amount",
+                    "operator": ">",
+                    "value": 1000,
+                    "requires_role": "approver",
+                }
+            ]
+        },
+        "constraints": [
+            {
+                "type": "separation_of_duties",
+                "roles": ["responsible", "accountable"],
+            }
+        ],
+    }
+
+    compiled = compile_policy(policy)
+
+    assert compiled["authority_requirements"]["required_roles"] == [
+        "proposer",
+        "responsible",
+        "accountable",
+    ]
+    assert compiled["approval_requirements"]["thresholds"] == [
+        {
+            "field": "amount",
+            "operator": ">",
+            "value": 1000,
+            "requires_role": "approver",
+        }
+    ]
+    assert compiled["invariants"]["separation_of_duties"] == [
+        ["responsible", "accountable"]
+    ]
+
+
+def test_invalid_approval_thresholds_type():
+
+    policy = {
+        "contract_id": "finance-core",
+        "contract_version": "1.2.0",
+        "approvals": {
+            "thresholds": "not-a-list"
+        }
+    }
+
+    with pytest.raises(PolicyCompilationError):
+        compile_policy(policy)
 
 
 def test_stage_transitions_compile():

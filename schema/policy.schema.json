@@ -61,6 +61,30 @@
       "additionalProperties": false
     },
 
+    "approvals": {
+      "type": "object",
+      "description": "Approval requirements triggered by threshold conditions.",
+      "properties": {
+
+        "thresholds": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["field", "operator", "value", "requires_role"],
+            "properties": {
+              "field": { "type": "string" },
+              "operator": { "type": "string" },
+              "value": {},
+              "requires_role": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+
+      },
+      "additionalProperties": false
+    },
+
     "stages": {
       "type": "object",
       "description": "Stage-level constraints used by governance workflows.",

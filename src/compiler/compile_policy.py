@@ -74,6 +74,7 @@ def compile_policy(policy: Dict[str, Any]) -> Dict[str, Any]:
         "contract_id": contract_id,
         "contract_version": contract_version,
         "authority_requirements": {},
+        "approval_requirements": {},
         "artifact_requirements": {},
         "stage_requirements": {},
         "invariants": {},
@@ -106,6 +107,19 @@ def compile_policy(policy: Dict[str, Any]) -> Dict[str, Any]:
             compiled["artifact_requirements"]["required_artifacts"] = (
                 required_artifacts
             )
+
+    approvals = policy.get("approvals", {})
+    if approvals:
+        thresholds = approvals.get("thresholds")
+        if thresholds is not None:
+            if not isinstance(thresholds, list) or not all(
+                isinstance(threshold, dict) for threshold in thresholds
+            ):
+                raise PolicyCompilationError(
+                    "approval thresholds must be a list of threshold objects"
+                )
+
+            compiled["approval_requirements"]["thresholds"] = thresholds
 
     stages = policy.get("stages", {})
     if stages:
@@ -142,6 +156,7 @@ def compile_policy(policy: Dict[str, Any]) -> Dict[str, Any]:
 
     for key in [
         "authority_requirements",
+        "approval_requirements",
         "artifact_requirements",
         "stage_requirements",
         "invariants",

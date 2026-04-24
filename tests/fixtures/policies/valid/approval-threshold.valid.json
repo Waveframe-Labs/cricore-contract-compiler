@@ -1,0 +1,17 @@
+{
+  "contract_id": "finance-core",
+  "contract_version": "1.2.0",
+  "authority": {
+    "required_roles": ["proposer", "responsible", "accountable"]
+  },
+  "approvals": {
+    "thresholds": [
+      {
+        "field": "amount",
+        "operator": ">",
+        "value": 1000,
+        "requires_role": "approver"
+      }
+    ]
+  }
+}
