@@ -136,6 +136,15 @@ The compiled contract always includes these top-level sections:
 }
 ```
 
+The required core identity fields of every compiled contract are:
+
+- `contract_id`
+- `contract_version`
+- `contract_hash`
+
+These are the only identity fields emitted by the compiler. The compiler does
+not emit aliases such as `id` or `version`.
+
 The compiler maps policy fields into compiled contract fields as follows:
 
 - `policy.authority.required_roles` becomes `authority_requirements.required_roles`.

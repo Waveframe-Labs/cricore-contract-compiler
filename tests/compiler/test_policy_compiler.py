@@ -64,6 +64,38 @@ def test_minimal_policy_compiles():
     assert len(compiled["contract_hash"]) == 64
 
 
+def test_compiler_output_shape():
+
+    policy = {
+        "contract_id": "protocol-shape",
+        "contract_version": "1.0.0",
+        "authority": {
+            "required_roles": ["proposer"]
+        }
+    }
+
+    compiled = compile_policy(policy)
+
+    assert "contract_id" in compiled
+    assert "contract_version" in compiled
+    assert "contract_hash" in compiled
+
+
+def test_compiler_core_identity_is_always_present():
+
+    policy = {
+        "contract_id": "core-identity",
+        "contract_version": "1.0.0",
+    }
+
+    compiled = compile_policy(policy)
+
+    required = ["contract_id", "contract_version", "contract_hash"]
+
+    for field in required:
+        assert field in compiled
+
+
 def test_authority_rules_compile():
 
     policy = {
