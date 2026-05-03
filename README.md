@@ -3,11 +3,11 @@ title: "CRI-CORE Contract Compiler - Repository Overview"
 filetype: "documentation"
 type: "overview"
 domain: "governance-tooling"
-version: "0.2.1"
-doi: "TBD-0.2.1"
-status: "Active"
+version: "0.3.0"
+doi: "TBD-0.3.0"
+status: "Stable (Protocol-Aligned)"
 created: "2026-03-11"
-updated: "2026-04-23"
+updated: "2026-05-03"
 
 author:
   name: "Waveframe Labs"
@@ -29,7 +29,8 @@ policies into CRI-CORE contract artifacts.
 
 It bridges governance design and runtime enforcement by converting a
 human-authored JSON policy into a stable, machine-readable compiled contract.
-The compiled contract can then be consumed by CRI-CORE enforcement systems.
+The compiled contract is a required input to CRI-CORE and defines the
+governance constraints evaluated at the execution boundary.
 
 The compiler does not execute governance logic, make runtime decisions, or
 enforce policy. Its role is limited to producing reproducible contract
@@ -65,7 +66,7 @@ from compiler.compile_policy import compile_policy
 
 policy = {
     "contract_id": "finance-policy",
-    "contract_version": "0.2.1",
+    "contract_version": "0.3.0",
     "authority": {
         "required_roles": ["proposer", "reviewer"]
     },
@@ -105,7 +106,7 @@ Policies are JSON objects with a required contract identity:
 ```json
 {
   "contract_id": "finance-policy",
-  "contract_version": "0.2.1"
+  "contract_version": "0.3.0"
 }
 ```
 
@@ -126,7 +127,7 @@ The compiled contract always includes these top-level sections:
 ```json
 {
   "contract_id": "finance-policy",
-  "contract_version": "0.2.1",
+  "contract_version": "0.3.0",
   "authority_requirements": {},
   "approval_requirements": {},
   "artifact_requirements": {},
@@ -156,11 +157,50 @@ The compiler maps policy fields into compiled contract fields as follows:
 Empty compiled sections remain present as empty objects to keep the contract
 shape stable for downstream validation and hashing.
 
+## Contract Identity Guarantee
+
+The compiler produces a deterministic contract identity composed of:
+
+- `contract_id`
+- `contract_version`
+- `contract_hash`
+
+The `contract_hash` is computed from the canonical compiled contract structure
+using sorted JSON serialization.
+
+For identical policy inputs, the compiler guarantees identical contract hashes.
+
+This identity is used by downstream systems (e.g., CRI-CORE) to verify that a
+proposal references the exact contract used for evaluation. Mismatches result
+in enforcement failure.
+
+## Contract Pass-Through Requirement
+
+Compiled contracts must be passed through downstream systems without
+modification.
+
+In particular:
+
+- Contract identity fields (`contract_id`, `contract_version`, `contract_hash`)
+  must not be altered.
+- Downstream components must not recompute or overwrite the contract hash.
+
+CRI-CORE enforces this at evaluation time. Any mismatch between a proposal's
+declared contract hash and the compiled contract hash will result in a blocked
+decision.
+
 ## Determinism
 
 Compiled contracts are hashed with SHA-256 after canonicalizing the compiled
-structure with sorted JSON keys. This keeps the contract hash stable for the
-same compiled policy content.
+structure using sorted JSON keys.
+
+This ensures:
+
+- identical policy inputs produce identical compiled outputs
+- identical compiled outputs produce identical contract hashes
+
+This determinism is required for reproducible enforcement and contract identity
+verification in CRI-CORE.
 
 Written artifacts also include `_compiler` metadata:
 
@@ -199,7 +239,7 @@ Contract Compiler
         |
 Compiled Contract
         |
-Proposal Wrapper
+Proposal Normalizer
         |
 CRI-CORE Kernel
         |
@@ -209,6 +249,20 @@ Commit Decision
 The compiler sits upstream of CRI-CORE runtime enforcement. It produces the
 structural contract artifact that downstream systems can evaluate.
 
+## Role in the Execution Protocol
+
+The compiler is responsible for defining governance constraints in a
+deterministic, machine-readable form.
+
+Within the CRI-CORE execution model:
+
+- The compiler defines contract identity and constraints
+- The proposal normalizer constructs canonical proposals referencing the contract
+- CRI-CORE evaluates whether the proposed action is admissible
+
+The compiler does not participate in runtime evaluation.
+It defines the contract that runtime enforcement depends on.
+
 ## Non-Responsibilities
 
 The compiler does not:
@@ -217,16 +271,24 @@ The compiler does not:
 - Interpret policy semantics beyond structural compilation.
 - Perform runtime decision logic.
 - Enforce governance rules.
+- Modify or interpret proposal data at runtime.
 
 All runtime enforcement is handled by CRI-CORE or other downstream systems.
 
+## Forward Compatibility
+
+Compiled contracts may include additional sections beyond those currently
+enforced by CRI-CORE (e.g., approval requirements, artifact requirements,
+stage constraints, invariants).
+
+These fields are preserved for forward compatibility and may be enforced by
+future versions of the execution pipeline.
+
 ## Project Status
 
-Version `0.2.1` extends the compiler with approval-threshold requirements
-alongside the core policy-to-contract mappings, minimal compile-time
-validation, stable compiled contract shape, and deterministic contract hashing.
-
-The project remains in early development.
+Version `0.3.0` aligns the compiler with the CRI-CORE structured execution model,
+ensuring deterministic contract identity, stable output structure, and compatibility
+with downstream proposal normalization and enforcement.
 
 ## License
 

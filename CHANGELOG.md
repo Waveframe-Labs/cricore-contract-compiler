@@ -1,13 +1,13 @@
 ---
-title: "CRI-CORE Contract Compiler — Changelog"
+title: "CRI-CORE Contract Compiler - Changelog"
 filetype: "documentation"
 type: "changelog"
 domain: "governance-tooling"
-version: "0.2.1"
-doi: "TBD-0.2.1"
+version: "0.3.0"
+doi: "TBD-0.3.0"
 status: "Active"
 created: "2026-03-11"
-updated: "2026-04-23"
+updated: "2026-05-03"
 
 author:
   name: "Shawn C. Wright"
@@ -27,10 +27,21 @@ copyright:
 ai_assisted: "partial"
 
 anchors:
-  - "CRI-CORE-CONTRACT-COMPILER-CHANGELOG-v0.2.1"
+  - "CRI-CORE-CONTRACT-COMPILER-CHANGELOG-v0.3.0"
 ---
 
 # Changelog
+
+## [0.3.0] - 2026-05-03
+
+### Changed
+- Aligned the compiler with the CRI-CORE structured execution protocol and documented deterministic contract identity behavior.
+- Clarified the compiler's role relative to CRI-CORE, proposal normalization, and pass-through contract handling.
+- Standardized release documentation around protocol-aligned `0.3.0` metadata and status.
+
+### Added
+- Explicit documentation for contract identity guarantees, pass-through requirements, protocol role, and forward compatibility behavior.
+- Test coverage asserting that compiled contracts always include `contract_id`, `contract_version`, and `contract_hash`.
 
 ## [0.2.1] - 2026-04-23
 
@@ -57,11 +68,11 @@ anchors:
 - Minimal compile-time type validation for required roles, required artifacts, allowed transitions, and contract versions.
 - Negative compiler coverage for invalid authority role definitions.
 
-## [0.1.0] – 2026-03-11
+## [0.1.0] - 2026-03-11
 
 ### Added
-- Initial CRI-CORE governance policy compiler
-- Deterministic policy → contract compilation
-- Canonical contract hashing
-- CLI interface for compiling policy files
-- Schema validation tests
+- Initial CRI-CORE governance policy compiler.
+- Deterministic policy-to-contract compilation.
+- Canonical contract hashing.
+- CLI interface for compiling policy files.
+- Schema validation tests.

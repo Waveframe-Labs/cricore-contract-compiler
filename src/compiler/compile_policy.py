@@ -4,11 +4,11 @@ title: "CRI-CORE Governance Policy Compiler"
 filetype: "operational"
 type: "specification"
 domain: "governance"
-version: "0.2.0"
-doi: "TBD-0.2.0"
+version: "0.3.0"
+doi: "TBD-0.3.0"
 status: "Active"
 created: "2026-03-11"
-updated: "2026-04-22"
+updated: "2026-05-03"
 
 author:
   name: "Shawn C. Wright"
@@ -32,7 +32,7 @@ dependencies:
   - "./contract_hash.py"
 
 anchors:
-  - "CRI-CORE-POLICY-COMPILER-v0.2.0"
+  - "CRI-CORE-POLICY-COMPILER-v0.3.0"
 ---
 """
 

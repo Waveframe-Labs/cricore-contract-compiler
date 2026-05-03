@@ -4,11 +4,11 @@ title: "CRI-CORE Compiled Contract Artifact Writer"
 filetype: "operational"
 type: "specification"
 domain: "governance"
-version: "0.1.3"
-doi: "TBD-0.1.3"
+version: "0.3.0"
+doi: "TBD-0.3.0"
 status: "Active"
 created: "2026-03-11"
-updated: "2026-03-11"
+updated: "2026-05-03"
 
 author:
   name: "Shawn C. Wright"
@@ -28,7 +28,7 @@ copyright:
 ai_assisted: "partial"
 
 anchors:
-  - "CRI-CORE-COMPILED-CONTRACT-WRITER-v0.1.3"
+  - "CRI-CORE-COMPILED-CONTRACT-WRITER-v0.3.0"
 ---
 """
 
@@ -72,7 +72,7 @@ def write_compiled_contract(compiled_contract: Dict[str, Any], output_path: Path
     artifact = {
         "_compiler": {
             "tool": "cricore-contract-compiler",
-            "version": "0.2.0",
+            "version": "0.3.0",
             "contract_hash": compiled_contract["contract_hash"],
         },
         **compiled_contract,
