@@ -1,26 +1,3 @@
----
-title: "CRI-CORE Contract Compiler - Repository Overview"
-filetype: "documentation"
-type: "overview"
-domain: "governance-tooling"
-version: "0.3.0"
-doi: "TBD-0.3.0"
-status: "Stable (Protocol-Aligned)"
-created: "2026-03-11"
-updated: "2026-05-03"
-
-author:
-  name: "Waveframe Labs"
-  email: "swright@waveframelabs.org"
-
-maintainer:
-  name: "Waveframe Labs"
-  url: "https://waveframelabs.org"
-
-license: "Apache-2.0"
-
-ai_assisted: "partial"
----
 <p align="center">
   <img src="https://raw.githubusercontent.com/Waveframe-Labs/.github/main/assets/branding/canon_wf_logo_extended.png" width="700">
 </p>
