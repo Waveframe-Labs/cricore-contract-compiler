@@ -21,6 +21,9 @@ license: "Apache-2.0"
 
 ai_assisted: "partial"
 ---
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Waveframe-Labs/.github/main/assets/branding/canon_wf_logo_extended.png" width="700">
+</p>
 
 # CRI-CORE Contract Compiler
 
