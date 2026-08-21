@@ -45,6 +45,7 @@ def test_written_contract_matches_compiled_output(tmp_path: Path):
     # Verify compiler metadata
     assert "_compiler" in written_contract
     assert written_contract["_compiler"]["tool"] == "cricore-contract-compiler"
+    assert written_contract["_compiler"]["version"] == "0.4.0"
     assert written_contract["_compiler"]["contract_hash"] == compiled["contract_hash"]
 
     # Compare the actual compiled contract surface

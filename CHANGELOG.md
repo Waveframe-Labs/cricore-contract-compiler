@@ -3,11 +3,11 @@ title: "CRI-CORE Contract Compiler - Changelog"
 filetype: "documentation"
 type: "changelog"
 domain: "governance-tooling"
-version: "0.3.0"
-doi: "TBD-0.3.0"
+version: "0.4.0"
+doi: "TBD-0.4.0"
 status: "Active"
 created: "2026-03-11"
-updated: "2026-05-03"
+updated: "2026-08-21"
 
 author:
   name: "Shawn C. Wright"
@@ -27,10 +27,31 @@ copyright:
 ai_assisted: "partial"
 
 anchors:
-  - "CRI-CORE-CONTRACT-COMPILER-CHANGELOG-v0.3.0"
+  - "CRI-CORE-CONTRACT-COMPILER-CHANGELOG-v0.4.0"
 ---
 
 # Changelog
+
+## [Unreleased]
+
+## [0.4.0] - 2026-08-21
+
+### Added
+- Deterministic target allow/deny scope.
+- Exact and literal prefix match declarations.
+- `target_requirements` included in contract identity.
+
+### Safety
+- Empty scopes rejected.
+- Malformed or blank rules rejected.
+- No glob, regex, or implicit normalization.
+- Legacy target-free output and hashes unchanged.
+
+### Compatibility
+- Existing policies remain valid.
+- Existing compiled contracts remain valid.
+- Runtime enforcement requires a Guard version supporting `target_requirements`.
+- No migration is required.
 
 ## [0.3.0] - 2026-05-03
 
