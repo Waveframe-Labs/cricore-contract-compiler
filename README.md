@@ -46,7 +46,7 @@ from compiler.compile_policy import compile_policy
 
 policy = {
     "contract_id": "finance-policy",
-    "contract_version": "0.4.0",
+    "contract_version": "1.0.0",
     "authority": {
         "required_roles": ["proposer", "reviewer"]
     },
@@ -86,7 +86,7 @@ Policies are JSON objects with a required contract identity:
 ```json
 {
   "contract_id": "finance-policy",
-  "contract_version": "0.4.0"
+  "contract_version": "1.0.0"
 }
 ```
 
@@ -101,6 +101,8 @@ The compiler currently recognizes these optional sections:
   `exact` or `prefix` matching.
 
 `contract_version` must follow semantic version format: `X.Y.Z`.
+`contract_version` is assigned by the policy owner and is independent of the
+compiler package version.
 
 ## Compiled Output
 
@@ -109,7 +111,7 @@ The compiled contract always includes these top-level sections:
 ```json
 {
   "contract_id": "finance-policy",
-  "contract_version": "0.4.0",
+  "contract_version": "1.0.0",
   "authority_requirements": {},
   "approval_requirements": {},
   "artifact_requirements": {},
