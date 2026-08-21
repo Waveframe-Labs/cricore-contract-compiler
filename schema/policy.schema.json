@@ -120,7 +120,21 @@
           "items": { "$ref": "#/$defs/target_rule" }
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": ["allow"],
+          "properties": {
+            "allow": { "minItems": 1 }
+          }
+        },
+        {
+          "required": ["deny"],
+          "properties": {
+            "deny": { "minItems": 1 }
+          }
+        }
+      ]
     }
 
   },
@@ -138,7 +152,8 @@
         },
         "value": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "\\S"
         }
       },
       "additionalProperties": false

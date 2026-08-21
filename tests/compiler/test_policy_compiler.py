@@ -291,6 +291,56 @@ def test_invalid_target_rules_are_rejected(targets):
         })
 
 
+@pytest.mark.parametrize("targets", [
+    {},
+    {"allow": []},
+    {"deny": []},
+    {"allow": [], "deny": []},
+])
+def test_empty_target_sections_are_rejected(targets):
+
+    with pytest.raises(PolicyCompilationError):
+        compile_policy({
+            "contract_id": "target-policy",
+            "contract_version": "1.0.0",
+            "targets": targets,
+        })
+
+
+@pytest.mark.parametrize("value", ["", " ", "\t", "\r\n"])
+def test_blank_target_rule_values_are_rejected(value):
+
+    with pytest.raises(PolicyCompilationError):
+        compile_policy({
+            "contract_id": "target-policy",
+            "contract_version": "1.0.0",
+            "targets": {
+                "allow": [{"match": "exact", "value": value}],
+            },
+        })
+
+
+@pytest.mark.parametrize("targets", [
+    {
+        "allow": [{"match": "exact", "value": "README.md"}],
+        "deny": [],
+    },
+    {
+        "allow": [],
+        "deny": [{"match": "prefix", "value": "deployment/"}],
+    },
+])
+def test_target_section_with_one_empty_collection_compiles(targets):
+
+    compiled = compile_policy({
+        "contract_id": "target-policy",
+        "contract_version": "1.0.0",
+        "targets": targets,
+    })
+
+    assert compiled["target_requirements"] == targets
+
+
 @pytest.mark.parametrize(("fixture_name", "expected_hash"), [
     ("minimal.valid.json", "85696b3e59660cfc79f4a48422f04e7c460f1b16578b4cb7429258930f35682e"),
     ("approval-threshold.valid.json", "48350c311443b6cc7f79e0ab4056b9f7d90d6c0785d3c8dea39321e6000ef23a"),

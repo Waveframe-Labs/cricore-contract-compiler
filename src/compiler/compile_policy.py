@@ -146,9 +146,16 @@ def _compile_target_requirements(targets: Any) -> Dict[str, List[Dict[str, str]]
     if unknown_properties:
         raise PolicyCompilationError("targets contains unsupported properties")
 
+    allow_rules = _compile_target_rules(targets.get("allow", []), "allow")
+    deny_rules = _compile_target_rules(targets.get("deny", []), "deny")
+    if not allow_rules and not deny_rules:
+        raise PolicyCompilationError(
+            "targets must contain at least one allow or deny rule"
+        )
+
     return {
-        "allow": _compile_target_rules(targets.get("allow", []), "allow"),
-        "deny": _compile_target_rules(targets.get("deny", []), "deny"),
+        "allow": allow_rules,
+        "deny": deny_rules,
     }
 
 
@@ -176,7 +183,7 @@ def _compile_target_rules(rules: Any, collection_name: str) -> List[Dict[str, st
             raise PolicyCompilationError(
                 "target rule match must be exact or prefix"
             )
-        if not isinstance(value, str) or not value:
+        if not isinstance(value, str) or not value or value.isspace():
             raise PolicyCompilationError("target rule value must be a non-empty string")
 
         compiled_rules.append({"match": match, "value": value})
