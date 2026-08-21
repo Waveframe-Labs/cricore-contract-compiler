@@ -46,7 +46,7 @@ from compiler.compile_policy import compile_policy
 
 policy = {
     "contract_id": "finance-policy",
-    "contract_version": "0.3.0",
+    "contract_version": "0.4.0",
     "authority": {
         "required_roles": ["proposer", "reviewer"]
     },
@@ -86,7 +86,7 @@ Policies are JSON objects with a required contract identity:
 ```json
 {
   "contract_id": "finance-policy",
-  "contract_version": "0.3.0"
+  "contract_version": "0.4.0"
 }
 ```
 
@@ -109,7 +109,7 @@ The compiled contract always includes these top-level sections:
 ```json
 {
   "contract_id": "finance-policy",
-  "contract_version": "0.3.0",
+  "contract_version": "0.4.0",
   "authority_requirements": {},
   "approval_requirements": {},
   "artifact_requirements": {},
@@ -171,14 +171,14 @@ When `targets` is present, it maps directly to the optional compiled section:
 }
 ```
 
-Supported match types are exactly `exact` and `prefix`; matching is
-case-sensitive against the normalized opaque target supplied by Guard. Deny
-rules take precedence over allow rules. A nonempty allow list blocks unmatched
-targets, while an empty or absent allow list allows targets unless denied.
-Missing or invalid execution targets fail closed whenever
-`target_requirements` exists. The format supports neither globs nor regular
-expressions, and the compiler performs no filesystem normalization. The
-compiler defines these constraints, but Guard enforces them.
+Supported match types are exactly `exact` and literal `prefix`; matching is
+case-sensitive against the opaque target supplied by Guard. Deny rules take
+precedence over allow rules. A nonempty allow list blocks unmatched targets,
+while an empty or absent allow list allows targets unless denied. Missing or
+invalid execution targets fail closed whenever `target_requirements` exists.
+The format supports neither globs nor regular expressions, and the compiler
+performs no implicit or filesystem normalization. The compiler defines and
+hashes these constraints, but Guard enforces them at runtime.
 
 ## Contract Identity Guarantee
 
@@ -231,7 +231,7 @@ Written artifacts also include `_compiler` metadata:
 {
   "_compiler": {
     "tool": "cricore-contract-compiler",
-    "version": "0.2.0",
+    "version": "0.4.0",
     "contract_hash": "..."
   }
 }
@@ -309,9 +309,10 @@ future versions of the execution pipeline.
 
 ## Project Status
 
-Version `0.3.0` aligns the compiler with the CRI-CORE structured execution model,
-ensuring deterministic contract identity, stable output structure, and compatibility
-with downstream proposal normalization and enforcement.
+Version `0.4.0` adds deterministic target scoping to contract identity while
+preserving legacy target-free compiled outputs and hashes. Runtime enforcement
+of target requirements requires a Guard version that supports
+`target_requirements`; no migration is required.
 
 ## License
 

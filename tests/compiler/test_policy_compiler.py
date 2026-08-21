@@ -257,10 +257,22 @@ def test_combined_target_rules_compile_deterministically():
     compiled_a = compile_policy(policy)
     compiled_b = compile_policy(policy)
 
-    assert compiled_a["target_requirements"] == {
-        "allow": [{"match": "exact", "value": "README.md"}],
-        "deny": [{"match": "prefix", "value": "deployment/"}],
+    expected = {
+        "contract_id": "target-policy",
+        "contract_version": "1.0.0",
+        "authority_requirements": {},
+        "approval_requirements": {},
+        "artifact_requirements": {},
+        "stage_requirements": {},
+        "invariants": {},
+        "target_requirements": {
+            "allow": [{"match": "exact", "value": "README.md"}],
+            "deny": [{"match": "prefix", "value": "deployment/"}],
+        },
+        "contract_hash": "e57a23b5309b529c66f2d385221f51b34f531b9d2b034af3af79dbfc73a180cd",
     }
+
+    assert compiled_a == expected
     assert compiled_a == compiled_b
     assert compiled_a["contract_hash"] == compiled_b["contract_hash"]
     assert compiled_a["contract_hash"] != compile_policy({
