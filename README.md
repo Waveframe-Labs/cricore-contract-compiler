@@ -97,6 +97,8 @@ The compiler currently recognizes these optional sections:
 - `artifacts.required`: list of required governance artifact names.
 - `stages.allowed_transitions`: list of allowed lifecycle transition objects.
 - `constraints`: list of explicit structural constraints.
+- `targets.allow` / `targets.deny`: optional opaque target-scoping rules using
+  `exact` or `prefix` matching.
 
 `contract_version` must follow semantic version format: `X.Y.Z`.
 
@@ -136,6 +138,47 @@ The compiler maps policy fields into compiled contract fields as follows:
 
 Empty compiled sections remain present as empty objects to keep the contract
 shape stable for downstream validation and hashing.
+
+## Target Scoping
+
+Target scope defines which resources an automated action may or may not change.
+
+```json
+{
+  "targets": {
+    "allow": [
+      {"match": "exact", "value": "README.md"}
+    ],
+    "deny": [
+      {"match": "prefix", "value": "deployment/"}
+    ]
+  }
+}
+```
+
+When `targets` is present, it maps directly to the optional compiled section:
+
+```json
+{
+  "target_requirements": {
+    "allow": [
+      {"match": "exact", "value": "README.md"}
+    ],
+    "deny": [
+      {"match": "prefix", "value": "deployment/"}
+    ]
+  }
+}
+```
+
+Supported match types are exactly `exact` and `prefix`; matching is
+case-sensitive against the normalized opaque target supplied by Guard. Deny
+rules take precedence over allow rules. A nonempty allow list blocks unmatched
+targets, while an empty or absent allow list allows targets unless denied.
+Missing or invalid execution targets fail closed whenever
+`target_requirements` exists. The format supports neither globs nor regular
+expressions, and the compiler performs no filesystem normalization. The
+compiler defines these constraints, but Guard enforces them.
 
 ## Contract Identity Guarantee
 

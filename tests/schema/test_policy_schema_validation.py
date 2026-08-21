@@ -45,3 +45,79 @@ def test_invalid_policies_fail_schema(policy_schema):
 
         with pytest.raises(jsonschema.ValidationError):
             jsonschema.validate(instance=policy, schema=policy_schema)
+
+
+@pytest.mark.parametrize("targets", [
+    {"allow": [{"value": "README.md"}]},
+    {"allow": [{"match": "exact"}]},
+    {"allow": [{"match": "glob", "value": "README.md"}]},
+    {"allow": [{"match": 1, "value": "README.md"}]},
+    {"allow": [{"match": "exact", "value": ""}]},
+    {"allow": [{"match": "exact", "value": 1}]},
+    {"allow": {}},
+    {"deny": "deployment/"},
+    {"unknown": []},
+    {"allow": [{"match": "exact", "value": "README.md", "extra": True}]},
+])
+def test_invalid_target_sections_fail_schema(policy_schema, targets):
+    policy = {
+        "contract_id": "target-policy",
+        "contract_version": "1.0.0",
+        "targets": targets,
+    }
+
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.validate(instance=policy, schema=policy_schema)
+
+
+@pytest.mark.parametrize("targets", [
+    {},
+    {"allow": []},
+    {"deny": []},
+    {"allow": [], "deny": []},
+])
+def test_empty_target_sections_fail_schema(policy_schema, targets):
+    policy = {
+        "contract_id": "target-policy",
+        "contract_version": "1.0.0",
+        "targets": targets,
+    }
+
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.validate(instance=policy, schema=policy_schema)
+
+
+@pytest.mark.parametrize("value", ["", " ", "\t", "\r\n"])
+def test_blank_target_rule_values_fail_schema(policy_schema, value):
+    policy = {
+        "contract_id": "target-policy",
+        "contract_version": "1.0.0",
+        "targets": {
+            "allow": [{"match": "exact", "value": value}],
+        },
+    }
+
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.validate(instance=policy, schema=policy_schema)
+
+
+@pytest.mark.parametrize("targets", [
+    {"allow": [{"match": "exact", "value": "README.md"}]},
+    {"deny": [{"match": "prefix", "value": "deployment/"}]},
+    {
+        "allow": [{"match": "exact", "value": "README.md"}],
+        "deny": [],
+    },
+    {
+        "allow": [],
+        "deny": [{"match": "prefix", "value": "deployment/"}],
+    },
+])
+def test_nonempty_target_sections_pass_schema(policy_schema, targets):
+    policy = {
+        "contract_id": "target-policy",
+        "contract_version": "1.0.0",
+        "targets": targets,
+    }
+
+    jsonschema.validate(instance=policy, schema=policy_schema)

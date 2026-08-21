@@ -105,9 +105,58 @@
 
       },
       "additionalProperties": false
+    },
+
+    "targets": {
+      "type": "object",
+      "description": "Optional opaque target-scoping requirements for governed mutations.",
+      "properties": {
+        "allow": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/target_rule" }
+        },
+        "deny": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/target_rule" }
+        }
+      },
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": ["allow"],
+          "properties": {
+            "allow": { "minItems": 1 }
+          }
+        },
+        {
+          "required": ["deny"],
+          "properties": {
+            "deny": { "minItems": 1 }
+          }
+        }
+      ]
     }
 
   },
 
-  "additionalProperties": false
+  "additionalProperties": false,
+
+  "$defs": {
+    "target_rule": {
+      "type": "object",
+      "required": ["match", "value"],
+      "properties": {
+        "match": {
+          "type": "string",
+          "enum": ["exact", "prefix"]
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
 }
