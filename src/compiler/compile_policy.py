@@ -98,6 +98,11 @@ def compile_policy(policy: Dict[str, Any]) -> Dict[str, Any]:
                 allowed_transitions
             )
 
+    if "targets" in policy:
+        compiled["target_requirements"] = _compile_target_requirements(
+            policy["targets"]
+        )
+
     constraints: List[Dict[str, Any]] = policy.get("constraints", [])
 
     separation_rules = []
@@ -131,3 +136,49 @@ def compile_policy(policy: Dict[str, Any]) -> Dict[str, Any]:
     compiled["contract_hash"] = contract_hash
 
     return compiled
+
+
+def _compile_target_requirements(targets: Any) -> Dict[str, List[Dict[str, str]]]:
+    if not isinstance(targets, dict):
+        raise PolicyCompilationError("targets must be an object")
+
+    unknown_properties = set(targets) - {"allow", "deny"}
+    if unknown_properties:
+        raise PolicyCompilationError("targets contains unsupported properties")
+
+    return {
+        "allow": _compile_target_rules(targets.get("allow", []), "allow"),
+        "deny": _compile_target_rules(targets.get("deny", []), "deny"),
+    }
+
+
+def _compile_target_rules(rules: Any, collection_name: str) -> List[Dict[str, str]]:
+    if not isinstance(rules, list):
+        raise PolicyCompilationError(
+            f"targets.{collection_name} must be a list of target rules"
+        )
+
+    compiled_rules: List[Dict[str, str]] = []
+    for rule in rules:
+        if not isinstance(rule, dict):
+            raise PolicyCompilationError(
+                f"targets.{collection_name} must contain target rule objects"
+            )
+
+        if set(rule) != {"match", "value"}:
+            raise PolicyCompilationError(
+                f"targets.{collection_name} rules require only match and value"
+            )
+
+        match = rule["match"]
+        value = rule["value"]
+        if not isinstance(match, str) or match not in {"exact", "prefix"}:
+            raise PolicyCompilationError(
+                "target rule match must be exact or prefix"
+            )
+        if not isinstance(value, str) or not value:
+            raise PolicyCompilationError("target rule value must be a non-empty string")
+
+        compiled_rules.append({"match": match, "value": value})
+
+    return compiled_rules
