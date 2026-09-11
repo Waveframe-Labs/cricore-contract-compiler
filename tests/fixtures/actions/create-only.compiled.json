@@ -1,0 +1,23 @@
+{
+  "action_requirements": {
+    "create": {
+      "allow": [
+        {
+          "match": "prefix",
+          "value": "generated/"
+        }
+      ],
+      "deny": [
+        {
+          "match": "prefix",
+          "value": "generated/private/"
+        }
+      ],
+      "required_role": null
+    }
+  },
+  "contract_hash": "e2c4a337b8a4e6f8c84287065c51eea014f30e22c0f2e9c13b7f1586dd6f091b",
+  "contract_id": "repository-file-policy",
+  "contract_version": "2.0.0",
+  "schema_version": "compiled_action_contract.v1"
+}

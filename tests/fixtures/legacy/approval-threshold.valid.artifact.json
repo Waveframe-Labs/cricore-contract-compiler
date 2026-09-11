@@ -1,0 +1,30 @@
+{
+  "_compiler": {
+    "contract_hash": "48350c311443b6cc7f79e0ab4056b9f7d90d6c0785d3c8dea39321e6000ef23a",
+    "tool": "cricore-contract-compiler",
+    "version": "0.4.0"
+  },
+  "approval_requirements": {
+    "thresholds": [
+      {
+        "field": "amount",
+        "operator": ">",
+        "requires_role": "approver",
+        "value": 1000
+      }
+    ]
+  },
+  "artifact_requirements": {},
+  "authority_requirements": {
+    "required_roles": [
+      "proposer",
+      "responsible",
+      "accountable"
+    ]
+  },
+  "contract_hash": "48350c311443b6cc7f79e0ab4056b9f7d90d6c0785d3c8dea39321e6000ef23a",
+  "contract_id": "finance-core",
+  "contract_version": "1.2.0",
+  "invariants": {},
+  "stage_requirements": {}
+}

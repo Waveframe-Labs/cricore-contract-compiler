@@ -1,0 +1,19 @@
+{
+  "contract_id": "target-policy",
+  "contract_version": "1.0.0",
+  "authority_requirements": {},
+  "approval_requirements": {},
+  "artifact_requirements": {},
+  "stage_requirements": {},
+  "invariants": {},
+  "target_requirements": {
+    "allow": [],
+    "deny": [
+      {
+        "match": "prefix",
+        "value": "deployment/"
+      }
+    ]
+  },
+  "contract_hash": "e71167aaf89654ee92d39b351633680be5ae5ccc3062dc99b8a57ddd32d22ad5"
+}

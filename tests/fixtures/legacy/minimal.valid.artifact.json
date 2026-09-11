@@ -1,0 +1,15 @@
+{
+  "_compiler": {
+    "contract_hash": "85696b3e59660cfc79f4a48422f04e7c460f1b16578b4cb7429258930f35682e",
+    "tool": "cricore-contract-compiler",
+    "version": "0.4.0"
+  },
+  "approval_requirements": {},
+  "artifact_requirements": {},
+  "authority_requirements": {},
+  "contract_hash": "85696b3e59660cfc79f4a48422f04e7c460f1b16578b4cb7429258930f35682e",
+  "contract_id": "example-governance-policy",
+  "contract_version": "0.1.0",
+  "invariants": {},
+  "stage_requirements": {}
+}
