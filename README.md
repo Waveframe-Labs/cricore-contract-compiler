@@ -26,7 +26,103 @@ pip install cricore-contract-compiler
 
 Requires Python 3.9 or later.
 
-## CLI Usage
+## Action policy API (unreleased)
+
+Use the distinct public API for independent file creation and modification
+requirements:
+
+```python
+from compiler import compile_action_policy
+
+policy = {
+    "schema_version": "action_policy.v1",
+    "contract_id": "repository-file-policy",
+    "contract_version": "2.0.0",
+    "action_requirements": {
+        "create": {
+            "required_role": None,
+            "allow": [{"match": "prefix", "value": "generated/"}],
+            "deny": [{"match": "prefix", "value": "generated/private/"}],
+        },
+        "modify": {
+            "required_role": "repository-maintainer",
+            "allow": [{"match": "exact", "value": "README.md"}],
+            "deny": [],
+        },
+    },
+}
+compiled = compile_action_policy(policy)
+```
+
+The module import `from compiler.compile_action_policy import compile_action_policy`
+is also supported. Invalid input raises
+`compiler.compile_policy.PolicyCompilationError`.
+
+The result has exactly `schema_version: compiled_action_contract.v1`,
+`contract_id`, `contract_version`, `action_requirements`, and `contract_hash`.
+See the complete [mixed output fixture](tests/fixtures/actions/mixed.compiled.json),
+[create-only fixture](tests/fixtures/actions/create-only.compiled.json), and
+[modify-only fixture](tests/fixtures/actions/modify-only.compiled.json).
+
+The input is closed at every object level. It requires the exact discriminator,
+a nonempty string contract ID, an `X.Y.Z` version, and at least one action.
+The only actions are `create` and `modify`; omitted actions remain omitted.
+Each present action requires exactly `required_role`, `allow`, and `deny`.
+Roles are null or nonempty strings. Rules require exactly `match` (`exact` or
+`prefix`) and a nonempty string `value`.
+
+- An absent action or no matching allow, including an empty allow list, grants
+  no permission. A required role is an additional requirement, never a grant.
+- Deny takes precedence within the same action. Other actions' rules and roles
+  have no effect.
+- Duplicate selectors within an action's allow or deny list reject compilation.
+  Identical allow/deny selectors within one action also reject; distinct
+  overlapping selectors remain representable. Selectors may be reused across
+  actions with different effects and roles.
+- Target strings remain exact, including case, whitespace, Unicode, separators,
+  and wildcard characters. Nonempty whitespace strings are literal values;
+  the compiler performs no path validation, normalization, or wildcard expansion.
+
+Rules sort by `(match, value)` in Python string order and object keys sort
+lexicographically. The result contains fresh nested containers. SHA-256 covers
+the entire output except `contract_hash`, including the schema discriminator,
+using the established `json.dumps(sort_keys=True, separators=(",", ":"))`
+UTF-8 convention (with the default ASCII escaping).
+
+Schemas ship in the wheel and sdist and can be read without a checkout:
+
+```python
+import json
+from importlib.resources import files
+
+schema = json.loads(files("compiler").joinpath(
+    "schemas/action_policy.schema.json"
+).read_text(encoding="utf-8"))
+```
+
+`schemas/compiled_action_contract.schema.json` describes the output;
+`schemas/policy.schema.json` retains the legacy input schema. The action schemas
+validate structure and duplicate rules; the compiler additionally checks
+allow/deny contradictions. Schema validation alone does not verify a hash.
+
+Ledger owns authority identity, semantic provenance, policy-path grammar, and
+publication. Guard owns runtime enforcement, containment, and operation
+preconditions. This API only produces compiler contracts.
+
+The legacy Python, file, and CLI entrypoints reject any top-level
+`action_requirements` or explicit `schema_version`, including mixed inputs.
+They retain historical outputs, hashes, and writer metadata for supported legacy
+inputs. The CLI remains a legacy compiler; serialize action API results directly
+with `json.dumps` when needed. The legacy artifact writer adds `_compiler`
+metadata and does not produce the exact action output envelope.
+
+Published `0.4.0` cannot acquire this capability retroactively. Future consumers
+must require the named new API and validate its exact output; a missing API must
+fail without legacy fallback. This unreleased change leaves package version and
+legacy writer metadata unchanged; distribution version alone is not a capability
+check.
+
+## Legacy CLI Usage
 
 Compile a governance policy into a compiled contract artifact:
 
@@ -37,7 +133,7 @@ cricore-compile-policy policy.json compiled_contract.json
 The output is a deterministic JSON artifact that includes compiler metadata,
 compiled governance requirements, invariants, and a contract hash.
 
-## Python Usage
+## Legacy Python Usage
 
 The compiler can also be used programmatically:
 
@@ -79,7 +175,7 @@ policy = {
 compiled_contract = compile_policy(policy)
 ```
 
-## Policy Input
+## Legacy Policy Input
 
 Policies are JSON objects with a required contract identity:
 
@@ -104,7 +200,7 @@ The compiler currently recognizes these optional sections:
 `contract_version` is assigned by the policy owner and is independent of the
 compiler package version.
 
-## Compiled Output
+## Legacy Compiled Output
 
 The compiled contract always includes these top-level sections:
 
@@ -141,7 +237,7 @@ The compiler maps policy fields into compiled contract fields as follows:
 Empty compiled sections remain present as empty objects to keep the contract
 shape stable for downstream validation and hashing.
 
-## Target Scoping
+## Legacy Target Scoping
 
 Target scope defines which resources an automated action may or may not change.
 
@@ -310,6 +406,12 @@ These fields are preserved for forward compatibility and may be enforced by
 future versions of the execution pipeline.
 
 ## Project Status
+
+To validate a checkout, run `python -m pytest -q`. For fresh wheel/sdist builds,
+strict metadata checks, a clean wheel install, installed public API/schema/CLI
+acceptance, and the complete suite against the installed package, install
+`build` and `twine` and run `python scripts/check_package.py`. The check keeps
+its artifacts and isolated environment under `.cache/` in this repository.
 
 Version `0.4.0` adds deterministic target scoping to contract identity while
 preserving legacy target-free compiled outputs and hashes. Runtime enforcement

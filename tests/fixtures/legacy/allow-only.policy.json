@@ -1,0 +1,12 @@
+{
+  "contract_id": "target-policy",
+  "contract_version": "1.0.0",
+  "targets": {
+    "allow": [
+      {
+        "match": "exact",
+        "value": "README.md"
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "contract_id": "target-policy",
+  "contract_version": "1.0.0",
+  "authority_requirements": {},
+  "approval_requirements": {},
+  "artifact_requirements": {},
+  "stage_requirements": {},
+  "invariants": {},
+  "target_requirements": {
+    "allow": [
+      {
+        "match": "exact",
+        "value": "README.md"
+      }
+    ],
+    "deny": []
+  },
+  "contract_hash": "44c674321fe885c19f1b6c23381ec6e842219dafa0683a9767f7f9611df31458"
+}

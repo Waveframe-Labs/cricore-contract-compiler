@@ -1,0 +1,22 @@
+{
+  "action_requirements": {
+    "create": {
+      "allow": [
+        {
+          "match": "prefix",
+          "value": "generated/"
+        }
+      ],
+      "deny": [
+        {
+          "match": "prefix",
+          "value": "generated/private/"
+        }
+      ],
+      "required_role": null
+    }
+  },
+  "contract_id": "repository-file-policy",
+  "contract_version": "2.0.0",
+  "schema_version": "action_policy.v1"
+}

@@ -1,0 +1,18 @@
+{
+  "action_requirements": {
+    "modify": {
+      "allow": [
+        {
+          "match": "exact",
+          "value": "README.md"
+        }
+      ],
+      "deny": [],
+      "required_role": "repository-maintainer"
+    }
+  },
+  "contract_hash": "1b9a77732e045682fddf2af7fd87bffa3cf260a53325c4990f26b537fb7aeb1f",
+  "contract_id": "repository-file-policy",
+  "contract_version": "2.0.0",
+  "schema_version": "compiled_action_contract.v1"
+}

@@ -1,0 +1,4 @@
+include CHANGELOG.md
+recursive-include schema *.json
+recursive-include tests *.py *.json
+recursive-include scripts *.py

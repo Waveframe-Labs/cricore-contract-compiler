@@ -1,0 +1,24 @@
+{
+  "_compiler": {
+    "contract_hash": "44c674321fe885c19f1b6c23381ec6e842219dafa0683a9767f7f9611df31458",
+    "tool": "cricore-contract-compiler",
+    "version": "0.4.0"
+  },
+  "approval_requirements": {},
+  "artifact_requirements": {},
+  "authority_requirements": {},
+  "contract_hash": "44c674321fe885c19f1b6c23381ec6e842219dafa0683a9767f7f9611df31458",
+  "contract_id": "target-policy",
+  "contract_version": "1.0.0",
+  "invariants": {},
+  "stage_requirements": {},
+  "target_requirements": {
+    "allow": [
+      {
+        "match": "exact",
+        "value": "README.md"
+      }
+    ],
+    "deny": []
+  }
+}
