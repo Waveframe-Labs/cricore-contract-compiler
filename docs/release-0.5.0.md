@@ -70,6 +70,9 @@ and jsonschema 4.25.1. Python <3.11 uses tomli 2.2.1. The generated lock also
 selects interpreter-compatible transitive pins, notably referencing 0.36.2 /
 0.37.0, rpds-py 0.27.1 / 2026.6.3, and readme-renderer 44.0 / 46.0 for
 3.9 / 3.14. These are validation constraints, not a raised package Python floor.
+The checker absolutizes output paths before resolving them: older Windows
+Python 3.9 may leave nonexistent relative paths unresolved, which otherwise
+misdirects venv creation after changing subprocess working directories.
 Setuptools 77.0.3 supports the SPDX license metadata used for strict checks;
 the [setuptools documentation](https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html)
 describes support introduced in 77.0.0. Apache-2.0 terms are unchanged.

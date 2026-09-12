@@ -34,7 +34,10 @@ def main():
         assert re.fullmatch(r"[0-9a-fA-F]{40}", args.expected_commit), "Expected commit must be a full SHA"
         assert commit == args.expected_commit.lower(), (commit, args.expected_commit)
         assert not dirty, f"Exact-head validation requires a clean checkout: {dirty}"
-    output = args.output.resolve()
+    # Older Windows 3.9 can leave a nonexistent relative path relative in
+    # resolve(strict=False). Absolutize before subprocesses change directory.
+    output = args.output.absolute().resolve()
+    assert output.is_absolute()
     output.mkdir(parents=True, exist_ok=False)
     evidence = {
         "commit": commit, "dirty": bool(dirty), "python": sys.version,

@@ -24,6 +24,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def check_package(work):
+    work = work.absolute().resolve()
+    assert work.is_absolute()
     work.mkdir(parents=True, exist_ok=False)
     distributions = work / "dist"
     # Default build builds an sdist, then a wheel FROM that sdist. No isolation:
@@ -125,4 +127,4 @@ def check_package(work):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, default=ROOT / ".cache" / f"package-check-{uuid.uuid4().hex}")
-    check_package(parser.parse_args().output.resolve())
+    check_package(parser.parse_args().output)
