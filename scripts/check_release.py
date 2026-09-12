@@ -25,6 +25,8 @@ def check_release(root):
     assert "Compiler 0.5.0 is an unreleased candidate" in readme
     assert '"version": "0.5.0"' in readme
     assert '"version": "0.4.0"' not in readme
+    assert "legacy writer metadata unchanged" not in readme
+    assert "historical outputs, hashes, and writer metadata" not in readme
     handoff = (root / "docs/release-0.5.0.md").read_text(encoding="utf-8")
     assert "Proposed tag: `v0.5.0`" in handoff
     assert "Status: **unreleased candidate**" in handoff

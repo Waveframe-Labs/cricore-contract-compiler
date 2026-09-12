@@ -114,16 +114,16 @@ preconditions. This API only produces compiler contracts.
 
 The legacy Python, file, and CLI entrypoints reject any top-level
 `action_requirements` or explicit `schema_version`, including mixed inputs.
-They retain historical outputs, hashes, and writer metadata for supported legacy
-inputs. The CLI remains a legacy compiler; serialize action API results directly
+They retain historical compiled outputs and hashes for supported legacy inputs;
+newly written wrappers identify the 0.5.0 producer. The CLI remains a legacy compiler; serialize action API results directly
 with `json.dumps` when needed. The legacy artifact writer adds `_compiler`
 metadata and does not produce the exact action output envelope.
 
 Published `0.4.0` cannot acquire this capability retroactively. Future consumers
 must require the named new API and validate its exact output; a missing API must
-fail without legacy fallback. This unreleased change leaves package version and
-legacy writer metadata unchanged; distribution version alone is not a capability
-check.
+fail without legacy fallback. This candidate prepares package version 0.5.0 and
+updates newly emitted legacy producer metadata accordingly. Distribution version
+alone is not a capability check.
 
 ## Legacy CLI Usage
 
