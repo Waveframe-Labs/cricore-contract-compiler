@@ -18,15 +18,18 @@ artifacts with a stable structure and deterministic hash.
 
 ## Installation
 
-Install from PyPI:
+**Compiler 0.5.0 is an unreleased candidate.** The ordinary published package
+does not yet provide this candidate's action-policy API. For candidate review,
+install the validated wheel retained by CI:
 
 ```bash
-pip install cricore-contract-compiler
+pip install /path/to/cricore_contract_compiler-0.5.0-py3-none-any.whl
 ```
 
-Requires Python 3.9 or later.
+Requires Python 3.9 or later. See the [release handoff](docs/release-0.5.0.md)
+for validation and the remaining coordinated publication gates.
 
-## Action policy API (unreleased)
+## Action policy API (0.5.0 unreleased candidate)
 
 Use the distinct public API for independent file creation and modification
 requirements:
@@ -329,13 +332,19 @@ Written artifacts also include `_compiler` metadata:
 {
   "_compiler": {
     "tool": "cricore-contract-compiler",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "contract_hash": "..."
   }
 }
 ```
 
 ## Validation
+
+The `_compiler.version` field identifies the writer of a newly emitted legacy
+artifact. It is wrapper metadata outside the hashed compiled contract. In this
+candidate only that field changes from historical 0.4.0 artifacts; the contract
+and hash stay identical. Retained artifacts and historical fixtures remain
+untouched. The action API returns its exact five fields without this wrapper.
 
 The compiler performs minimal compile-time validation for:
 
@@ -407,16 +416,19 @@ future versions of the execution pipeline.
 
 ## Project Status
 
-To validate a checkout, run `python -m pytest -q`. For fresh wheel/sdist builds,
-strict metadata checks, a clean wheel install, installed public API/schema/CLI
-acceptance, and the complete suite against the installed package, install
-`build` and `twine` and run `python scripts/check_package.py`. The check keeps
-its artifacts and isolated environment under `.cache/` in this repository.
+Version **0.5.0 is an unreleased candidate** for independent create/modify
+compilation. The CLI remains legacy-only. Ledger must require
+`from compiler import compile_action_policy` without a legacy fallback;
+downstream dependency pin changes belong to subsequent tasks.
 
-Version `0.4.0` adds deterministic target scoping to contract identity while
-preserving legacy target-free compiled outputs and hashes. Runtime enforcement
-of target requirements requires a Guard version that supports
-`target_requirements`; no migration is required.
+Install `requirements/ci.txt` in a virtual environment with
+`python -m pip install --require-hashes -r requirements/ci.txt`, then run
+`python scripts/validate.py`. This checks current release metadata, the complete
+source suite, repeated representative compilation, fresh sdist and wheel builds,
+strict distribution checks, and a clean wheel's API, schemas, CLI, full suite,
+and dependency consistency. Evidence and environments stay under `.cache/`.
+Use `--expected-commit FULL_SHA` to require a clean checkout at an exact commit.
+CI runs all checks on Windows/Linux with Python 3.9 and 3.14; skips fail validation.
 
 ## License
 
