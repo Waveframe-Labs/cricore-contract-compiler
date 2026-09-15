@@ -34,6 +34,21 @@ anchors:
 
 ## [Unreleased]
 
+### Added
+- Public `compiler.compile_action_policy` API for closed `action_policy.v1`
+  input and exact `compiled_action_contract.v1` output.
+- Independent create/modify roles and allow/deny rules, deterministic rule
+  ordering, literal targets, detached outputs, and complete contract hashing.
+- Packaged input/output schemas, exact action and historical legacy fixtures,
+  and repeatable fresh-distribution/clean-wheel acceptance checks.
+
+### Compatibility
+- Legacy Python/file/CLI compilation rejects action payloads and explicit schema
+  discriminators, preserving supported legacy output bytes and hashes.
+- Published 0.4.0 remains unchanged. Consumers must require the new named API
+  without falling back to the legacy compiler.
+- Ledger provenance/publication and Guard runtime enforcement remain external.
+
 ## [0.4.0] - 2026-08-21
 
 ### Added

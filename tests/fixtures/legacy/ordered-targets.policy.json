@@ -1,0 +1,26 @@
+{
+  "contract_id": "target-policy",
+  "contract_version": "1.0.0",
+  "targets": {
+    "allow": [
+      {
+        "match": "prefix",
+        "value": "z/"
+      },
+      {
+        "match": "exact",
+        "value": "A\\b"
+      },
+      {
+        "match": "prefix",
+        "value": "z/"
+      }
+    ],
+    "deny": [
+      {
+        "match": "prefix",
+        "value": "z/"
+      }
+    ]
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "contract_id": "all-sections",
+  "contract_version": "1.2.3",
+  "authority": {
+    "required_roles": [
+      "reviewer",
+      "proposer"
+    ],
+    "separation_of_duties": true
+  },
+  "approvals": {
+    "thresholds": [
+      {
+        "field": "amount",
+        "operator": ">",
+        "value": 1000,
+        "requires_role": "approver"
+      }
+    ]
+  },
+  "artifacts": {
+    "required": [
+      "proposal",
+      "approval"
+    ]
+  },
+  "stages": {
+    "allowed_transitions": [
+      {
+        "from": "proposed",
+        "to": "approved"
+      }
+    ]
+  },
+  "constraints": [
+    {
+      "type": "separation_of_duties",
+      "roles": [
+        "reviewer",
+        "proposer"
+      ]
+    }
+  ]
+}

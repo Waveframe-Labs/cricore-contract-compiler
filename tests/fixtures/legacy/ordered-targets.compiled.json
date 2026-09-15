@@ -1,0 +1,32 @@
+{
+  "contract_id": "target-policy",
+  "contract_version": "1.0.0",
+  "authority_requirements": {},
+  "approval_requirements": {},
+  "artifact_requirements": {},
+  "stage_requirements": {},
+  "invariants": {},
+  "target_requirements": {
+    "allow": [
+      {
+        "match": "prefix",
+        "value": "z/"
+      },
+      {
+        "match": "exact",
+        "value": "A\\b"
+      },
+      {
+        "match": "prefix",
+        "value": "z/"
+      }
+    ],
+    "deny": [
+      {
+        "match": "prefix",
+        "value": "z/"
+      }
+    ]
+  },
+  "contract_hash": "4ac8f08d3fbb5102a02cf5a10d24bc1963504fa4478ec3eacffcbd922e190f4f"
+}

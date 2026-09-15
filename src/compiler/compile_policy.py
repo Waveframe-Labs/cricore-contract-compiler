@@ -16,6 +16,12 @@ def compile_policy(policy: Dict[str, Any]) -> Dict[str, Any]:
     if not isinstance(policy, dict):
         raise PolicyCompilationError("policy must be an object")
 
+    if "action_requirements" in policy or "schema_version" in policy:
+        raise PolicyCompilationError(
+            "compile_policy accepts only undiscriminated legacy policies; "
+            "use compile_action_policy for action_policy.v1"
+        )
+
     contract_id = policy.get("contract_id")
     contract_version = policy.get("contract_version")
 

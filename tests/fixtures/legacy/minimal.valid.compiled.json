@@ -1,0 +1,10 @@
+{
+  "contract_id": "example-governance-policy",
+  "contract_version": "0.1.0",
+  "authority_requirements": {},
+  "approval_requirements": {},
+  "artifact_requirements": {},
+  "stage_requirements": {},
+  "invariants": {},
+  "contract_hash": "85696b3e59660cfc79f4a48422f04e7c460f1b16578b4cb7429258930f35682e"
+}
