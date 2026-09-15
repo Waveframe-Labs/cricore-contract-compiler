@@ -1,14 +1,15 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools==77.0.3", "wheel==0.45.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "cricore-contract-compiler"
-version = "0.4.0"
+version = "0.5.0"
 description = "Deterministic compiler for governance policies into CRI-CORE contract artifacts."
 readme = "README.md"
 requires-python = ">=3.9"
-license = { text = "Apache-2.0" }
+license = "Apache-2.0"
+license-files = ["LICENSE"]
 
 authors = [
     { name = "Waveframe Labs", email = "swright@waveframelabs.org" }
@@ -24,7 +25,6 @@ keywords = [
 
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
 ]
 

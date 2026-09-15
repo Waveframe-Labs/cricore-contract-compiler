@@ -3,11 +3,11 @@ title: "CRI-CORE Contract Compiler - Changelog"
 filetype: "documentation"
 type: "changelog"
 domain: "governance-tooling"
-version: "0.4.0"
-doi: "TBD-0.4.0"
-status: "Active"
+version: "0.5.0"
+doi: "TBD-0.5.0"
+status: "Unreleased candidate"
 created: "2026-03-11"
-updated: "2026-08-21"
+updated: "2026-09-12"
 
 author:
   name: "Shawn C. Wright"
@@ -27,12 +27,12 @@ copyright:
 ai_assisted: "partial"
 
 anchors:
-  - "CRI-CORE-CONTRACT-COMPILER-CHANGELOG-v0.4.0"
+  - "CRI-CORE-CONTRACT-COMPILER-CHANGELOG-v0.5.0"
 ---
 
 # Changelog
 
-## [Unreleased]
+## [0.5.0] - Unreleased candidate
 
 ### Added
 - Public `compiler.compile_action_policy` API for closed `action_policy.v1`
@@ -41,10 +41,22 @@ anchors:
   ordering, literal targets, detached outputs, and complete contract hashing.
 - Packaged input/output schemas, exact action and historical legacy fixtures,
   and repeatable fresh-distribution/clean-wheel acceptance checks.
+- Automatic PR/push validation and manual exact-commit validation on
+  Windows/Linux with Python 3.9/3.14, pinned dependencies, complete source and
+  installed suites, strict distribution checks, and retained build provenance.
+
+### Release metadata
+- Newly written legacy artifacts identify producer version 0.5.0. Only
+  `_compiler.version` changes from historical wrappers; the compiled contract
+  and its hash remain identical. Historical 0.4.0 fixtures and retained
+  artifacts remain untouched. Action results still contain exactly five fields.
+- Package metadata uses the Apache-2.0 SPDX expression and includes LICENSE;
+  the license itself is unchanged. Python support remains >=3.9.
 
 ### Compatibility
 - Legacy Python/file/CLI compilation rejects action payloads and explicit schema
-  discriminators, preserving supported legacy output bytes and hashes.
+  discriminators, preserving compiled legacy output bytes and hashes, with
+  only the documented producer-version change in newly written wrappers.
 - Published 0.4.0 remains unchanged. Consumers must require the new named API
   without falling back to the legacy compiler.
 - Ledger provenance/publication and Guard runtime enforcement remain external.

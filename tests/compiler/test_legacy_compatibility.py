@@ -18,6 +18,11 @@ def test_historical_legacy_outputs_and_artifact_bytes(policy_path, tmp_path, mon
     expected_text = policy_path.with_name(policy_path.name.replace(".policy.", ".compiled.")).read_text(encoding="utf-8")
     assert json.dumps(compile_policy(policy), indent=2) + "\n" == expected_text
     expected_bytes = policy_path.with_name(policy_path.name.replace(".policy.", ".artifact.")).read_bytes()
+    historical = json.loads(expected_bytes)
+    assert historical["_compiler"]["version"] == "0.4.0"
+    current = json.loads(expected_bytes)
+    current["_compiler"]["version"] = "0.5.0"
+    current_bytes = (json.dumps(current, indent=2, sort_keys=True) + "\n").encode("utf-8")
     for mode in ["file", "cli"]:
         output = tmp_path / f"{mode}.json"
         if mode == "file":
@@ -26,7 +31,10 @@ def test_historical_legacy_outputs_and_artifact_bytes(policy_path, tmp_path, mon
             monkeypatch.setattr(sys, "argv", ["cricore-compile-policy", str(policy_path), str(output)])
             main()
         # Text-mode newline translation is platform-specific; JSON bytes are fixed.
-        assert output.read_bytes().replace(b"\r\n", b"\n") == expected_bytes.replace(b"\r\n", b"\n")
+        assert output.read_bytes().replace(b"\r\n", b"\n") == current_bytes
+        restored = json.loads(output.read_bytes())
+        restored["_compiler"]["version"] = "0.4.0"
+        assert (json.dumps(restored, indent=2, sort_keys=True) + "\n").encode("utf-8") == expected_bytes.replace(b"\r\n", b"\n")
 
 
 RESTRICTED_PAYLOADS = [

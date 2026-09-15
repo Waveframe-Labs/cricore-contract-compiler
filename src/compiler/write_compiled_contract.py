@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 from typing import Any, Dict
 
+from ._version import __version__
+
 
 class ContractWriteError(Exception):
     """
@@ -38,7 +40,7 @@ def write_compiled_contract(compiled_contract: Dict[str, Any], output_path: Path
     artifact = {
         "_compiler": {
             "tool": "cricore-contract-compiler",
-            "version": "0.4.0",
+            "version": __version__,
             "contract_hash": compiled_contract["contract_hash"],
         },
         **compiled_contract,
